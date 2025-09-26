@@ -62,15 +62,56 @@
     </div>
     
     <!-- Three.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="src/utils/constants.js"></script>
-    <script src="src/utils/math.js"></script>
-    <script src="src/camera/camera-controller.js"></script>
-    <script src="src/rendering/lod-manager.js"></script>
-    <script src="src/objects/star-system.js"></script>
-    <script src="src/objects/planet-system.js"></script>
-    <script src="src/objects/galaxy-system.js"></script>
-    <script src="src/animation/time-controller.js"></script>
-    <script src="src/main.js"></script>
+    <!-- Try external CDN first, fallback to local stub if blocked -->
+    <script>
+        // Check if Three.js loads from CDN
+        function loadThreeJS() {
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/three@0.128.0/build/three.min.js';
+                script.onload = function() {
+                    console.log('Three.js loaded from CDN');
+                    resolve();
+                };
+                script.onerror = function() {
+                    console.log('CDN blocked, loading Three.js stub');
+                    const stubScript = document.createElement('script');
+                    stubScript.src = 'lib/three-stub.js';
+                    stubScript.onload = resolve;
+                    document.head.appendChild(stubScript);
+                };
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Load Three.js before starting the application
+        loadThreeJS().then(() => {
+            // Load application scripts after Three.js is ready
+            const scripts = [
+                'src/utils/constants.js',
+                'src/utils/math.js',
+                'src/camera/camera-controller.js',
+                'src/rendering/lod-manager.js',
+                'src/objects/star-system.js',
+                'src/objects/planet-system.js',
+                'src/objects/galaxy-system.js',
+                'src/animation/time-controller.js',
+                'src/main.js'
+            ];
+            
+            let loadedCount = 0;
+            scripts.forEach(src => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => {
+                    loadedCount++;
+                    if (loadedCount === scripts.length) {
+                        console.log('All scripts loaded, ready to initialize');
+                    }
+                };
+                document.head.appendChild(script);
+            });
+        });
+    </script>
 </body>
 </html>
