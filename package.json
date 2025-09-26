@@ -1,0 +1,22 @@
+{
+  "name": "universe-simulator",
+  "version": "1.0.0",
+  "description": "A simulator that shows, planets, galaxies, observable small bodies with a 3D map using NASA APIs",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node test/coordinate-utils.test.js",
+    "lint": "echo 'No linter configured yet'"
+  },
+  "keywords": [
+    "astronomy",
+    "simulation",
+    "3d",
+    "nasa",
+    "gaia",
+    "coordinates"
+  ],
+  "author": "Erkam Yildirim",
+  "license": "MIT",
+  "type": "module"
+}
