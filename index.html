@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universe Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="container">
+        <canvas id="canvas"></canvas>
+        
+        <!-- UI Controls -->
+        <div id="controls">
+            <div class="control-panel">
+                <h3>Navigation</h3>
+                <div class="control-group">
+                    <label for="zoom-slider">Zoom Level:</label>
+                    <input type="range" id="zoom-slider" min="0" max="100" value="50">
+                    <span id="zoom-display">1 AU</span>
+                </div>
+                <div class="control-group">
+                    <label for="time-slider">Time:</label>
+                    <input type="range" id="time-slider" min="-10" max="10" value="0" step="0.1">
+                    <span id="time-display">2024</span>
+                </div>
+                <div class="control-group">
+                    <button id="play-pause">Play</button>
+                    <button id="reset-time">Reset</button>
+                </div>
+            </div>
+            
+            <div class="control-panel">
+                <h3>View Options</h3>
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="show-orbits" checked>
+                        Show Orbits
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="show-labels" checked>
+                        Show Labels
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label for="star-limit">Star Magnitude Limit:</label>
+                    <input type="range" id="star-limit" min="1" max="10" value="6" step="0.5">
+                    <span id="star-limit-display">6.0</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Info Panel -->
+        <div id="info-panel">
+            <h3>Universe Simulator</h3>
+            <p id="camera-info">Distance: 1 AU</p>
+            <p id="object-count">Objects: 0</p>
+            <p id="fps-counter">FPS: 0</p>
+        </div>
+    </div>
+    
+    <!-- Three.js Library -->
+    <!-- Try external CDN first, fallback to local stub if blocked -->
+    <script>
+        // Check if Three.js loads from CDN
+        function loadThreeJS() {
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/three@0.128.0/build/three.min.js';
+                script.onload = function() {
+                    console.log('Three.js loaded from CDN');
+                    resolve();
+                };
+                script.onerror = function() {
+                    console.log('CDN blocked, loading Three.js stub');
+                    const stubScript = document.createElement('script');
+                    stubScript.src = 'lib/three-stub.js';
+                    stubScript.onload = resolve;
+                    document.head.appendChild(stubScript);
+                };
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Load Three.js before starting the application
+        loadThreeJS().then(() => {
+            // Load application scripts after Three.js is ready
+            const scripts = [
+                'src/utils/constants.js',
+                'src/utils/math.js',
+                'src/camera/camera-controller.js',
+                'src/rendering/lod-manager.js',
+                'src/objects/star-system.js',
+                'src/objects/planet-system.js',
+                'src/objects/galaxy-system.js',
+                'src/animation/time-controller.js',
+                'src/main.js'
+            ];
+            
+            let loadedCount = 0;
+            scripts.forEach(src => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => {
+                    loadedCount++;
+                    if (loadedCount === scripts.length) {
+                        console.log('All scripts loaded, ready to initialize');
+                    }
+                };
+                document.head.appendChild(script);
+            });
+        });
+    </script>
+</body>
+</html>
